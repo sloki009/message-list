@@ -10,10 +10,12 @@ function Home() {
   useEffect(() => {
     //console.log("in useeff1");
     const fetchMessages = (token) => {
+      //console.log("token", token);
       let temp_api = MESSAGES_API;
-      if (!token) {
+      if (token) {
         temp_api = `${MESSAGES_API}?pageToken=${token}`;
       }
+      console.log(temp_api);
       fetch(temp_api)
         .then((res) => res.json())
         .then((res) => {

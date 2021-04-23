@@ -111,3 +111,9 @@
 .swipe_btn_show {
     display: flex;
 }
+
+@media (min-width:600px) {
+    .container {
+        padding: 10% 15px 0px 15px;
+    }
+}

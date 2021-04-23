@@ -8,6 +8,7 @@ var token_holder = "";
 function Home() {
   const [messageList, setmessageList] = useState({ token: "", messages: [] });
   useEffect(() => {
+    //console.log("in useeff1");
     const fetchMessages = (token) => {
       let temp_api = MESSAGES_API;
       if (!token) {
@@ -29,33 +30,83 @@ function Home() {
   }, [messageList.token]);
 
   useEffect(() => {
+    //console.log("in useef 2");
     document
       .querySelector("#cards_container")
       .addEventListener("scroll", function (e) {
-        console.log(
-          "scrolled....",
-          this.scrollTop + $(this).innerHeight(),
-          "sheigt",
-          this.scrollHeight
-        );
-        console.log(
-          "valss...",
-          $(this).scrollTop(),
-          $(this).innerHeight(),
-          $(this)[0].scrollHeight
-        );
         if (
           $(this).scrollTop() + $(this).innerHeight() >=
-          $(this)[0].scrollHeight
+          $(this)[0].scrollHeight - 10
         ) {
-          alert("End of DIV is reached!");
+          //alert("End of DIV is reached!");
           onCardsScroll();
         }
       });
-    return () => {
-      //document.querySelector("#cards_container").removeEventListener("scroll");
-    };
   }, [messageList.token]);
+
+  useEffect(() => {
+    //console.log("in useeff 3");
+
+    var container = document.getElementsByClassName("card");
+    //console.log(container);
+    Array.from(container).forEach(function (element) {
+      element.addEventListener("touchstart", startTouch, false);
+    });
+    Array.from(container).forEach(function (element) {
+      element.addEventListener("touchmove", moveTouch, false);
+    });
+    //container.addEventListener("touchstart", startTouch, false);
+    //container.addEventListener("touchmove", moveTouch, false);
+
+    // Swipe Up / Down / Left / Right
+    var initialX = null;
+    var initialY = null;
+
+    function startTouch(e) {
+      initialX = e.touches[0].clientX;
+      initialY = e.touches[0].clientY;
+    }
+
+    function moveTouch(e) {
+      if (initialX === null) {
+        return;
+      }
+
+      if (initialY === null) {
+        return;
+      }
+
+      var currentX = e.touches[0].clientX;
+      var currentY = e.touches[0].clientY;
+
+      var diffX = initialX - currentX;
+      var diffY = initialY - currentY;
+
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        // sliding horizontally
+        let element = e.target
+          .closest(".message_card")
+          .querySelector(".message_card_swipe_buttons");
+
+        if (diffX > 0) {
+          // swiped left
+          console.log("swiped left");
+          element.classList.remove("swipe_btn_show");
+          element.classList.add("swipe_btn_hide");
+        } else {
+          // swiped right
+          console.log("swiped right");
+          element.classList.remove("swipe_btn_hide");
+          element.classList.add("swipe_btn_show");
+        }
+      }
+
+      initialX = null;
+      initialY = null;
+
+      e.preventDefault();
+    }
+  });
 
   const getYearsDiff = (date1, date2) => {
     let diff = (date1 - date2) / 1000;
@@ -69,26 +120,62 @@ function Home() {
       token: token_holder,
     }));
   };
+
+  const deleteMesaage = (index) => {
+    console.log(messageList.messages[index]);
+    let temp = messageList.messages;
+    temp.splice(index, 1);
+    console.log(temp);
+    setmessageList((prevList) => ({
+      ...prevList,
+      messages: [...temp],
+    }));
+    document
+      .querySelector(".swipe_btn_show")
+      .classList.remove("swipe_btn_show");
+  };
+
+  const editMessage = () => {
+    console.log("in editMessage...");
+  };
+
   return (
     <div className="container">
+      {console.log("in render")}
       <div className="cards_container" id="cards_container">
         {messageList.messages?.map((message, index) => (
-          <div className="card" key={index}>
-            <div className="author_header order-1">
-              <img
-                src={`${BASE_URL}/${message.author.photoUrl}`}
-                alt="author img"
-              />
-              <div className="intro">
-                <strong>{message.author.name}</strong>
-                <small>
-                  {getYearsDiff(Date.now(), new Date(message.updated))} years
-                  ago
-                </small>
-              </div>
+          <div className="message_card" key={index}>
+            <div className="message_card_swipe_buttons order-1">
+              <button
+                className="edit_swipe bg-green"
+                onClick={() => editMessage(index)}
+              >
+                <h4>Edit</h4>
+              </button>
+              <button
+                className="delete_swipe bg-red"
+                onClick={() => deleteMesaage(index)}
+              >
+                <h4>Delete</h4>
+              </button>
             </div>
-            <div className="author_content order-2">
-              <p>{message.content}</p>
+            <div className="card order-2">
+              <div className="author_header order-1">
+                <img
+                  src={`${BASE_URL}/${message.author.photoUrl}`}
+                  alt="author img"
+                />
+                <div className="intro">
+                  <strong>{message.author.name}</strong>
+                  <small>
+                    {getYearsDiff(Date.now(), new Date(message.updated))} years
+                    ago
+                  </small>
+                </div>
+              </div>
+              <div className="author_content order-2">
+                <p>{message.content}</p>
+              </div>
             </div>
           </div>
         ))}

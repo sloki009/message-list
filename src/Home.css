@@ -2,6 +2,7 @@
     width: 100%;
     height: 100vh;
     display: flex;
+    padding: 22% 15px 0px 15px;
 }
 
 .cards_container {
@@ -13,15 +14,53 @@
     overflow: auto;
 }
 
+.message_card {
+    display: flex;
+    column-gap: 0;
+    border: 1px solid #ece3e3;
+    margin: 0 0 15px 0;
+    box-shadow: 3px 3px #b2aeae;
+}
+
+.message_card_swipe_buttons {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 10px 0;
+    padding: 10px;
+    /* justify-content: space-between; */
+    /* align-items: stretch; */
+    row-gap: 10%;
+    display: none;
+}
+
+.message_card_swipe_buttons button {
+    /* transform: rotate(90deg); */
+    flex-grow: 1;
+    color: #fff;
+    border-radius: 7px;
+    border: none;
+}
+
+.edit_swipe:focus,
+.delete_swipe:focus {
+    outline: none;
+}
+
+.message_card_swipe_buttons button h4 {
+    transform: rotate( -90deg);
+}
+
 .card {
+    flex-grow: 3;
     width: 100%;
     height: auto;
     padding: 20px;
     display: flex;
     flex-direction: column;
     row-gap: 10px;
-    border: 0.5px solid gray;
-    margin: 0 0 10px 0;
+    /* border: 0.5px solid gray;
+    margin: 0 0 10px 0; */
 }
 
 .author_header {
@@ -45,6 +84,14 @@
     word-wrap: break-word;
 }
 
+.bg-green {
+    background-color: lightgreen;
+}
+
+.bg-red {
+    background-color: red;
+}
+
 .order-1 {
     order: 1;
 }
@@ -55,4 +102,12 @@
 
 .intro strong {
     display: block;
+}
+
+.swipe_btn_hide {
+    display: none;
+}
+
+.swipe_btn_show {
+    display: flex;
 }
